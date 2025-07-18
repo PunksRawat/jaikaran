@@ -294,7 +294,7 @@
 
         <form action="https://formsubmit.co/c9e61764c7f2078186c1e4b13a41eba5" method="POST">
           <input type="text" name="name" class="form-control mb-2" placeholder="Your Name" required>
-          <input type="tel" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
+          <input type="tel" name="phone" class="form-control mb-2" placeholder="Phone Number" required pattern="^\+?\d{10,15}$" title="Enter a valid phone number with digits and optional +">
           <input type="email" name="email" class="form-control mb-2" placeholder="Email (optional)">
           <button type="submit" class="btn btn-primary w-100 mb-2">Request Quotation</button>
         </form>
