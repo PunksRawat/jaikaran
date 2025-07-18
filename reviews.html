@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Reviews | JK Industries</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+  <div class="container py-4">
+    <h2 class="text-center mb-4" style="font-family: 'Georgia', serif;">Customer Reviews</h2>
+    <div id="reviewsList" class="row g-4"></div>
+  </div>
+  <script>
+    const API_URL = window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
+      ? "http://localhost:8080"
+      : "https://jaikaran-backend.onrender.com";
+
+    function renderStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        stars += `<i class="bi ${i <= rating ? 'bi-star-fill text-warning' : 'bi-star'}"></i>`;
+      }
+      return stars;
+    }
+
+    fetch(`${API_URL}/api/review`)
+      .then(res => res.json())
+      .then(data => {
+        const reviewsList = document.getElementById('reviewsList');
+        reviewsList.innerHTML = '';
+        data.forEach(review => {
+          reviewsList.innerHTML += `
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-person-circle fs-2 me-2 text-success"></i>
+                    <span class="fw-bold">${review.customerName}</span>
+                  </div>
+                  <div class="mb-2">${renderStars(review.rating)}</div>
+                  <p class="mb-2">${review.comment}</p>
+                  ${review.imageUrl ? `<img src="${review.imageUrl}" alt="Review Image" class="img-fluid rounded mb-2" style="max-height:120px;">` : ''}
+                  <small class="text-muted">${review.createdAt ? new Date(review.createdAt).toLocaleString() : ''}</small>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      });
+  </script>
+</body>
+</html>

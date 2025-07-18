@@ -135,10 +135,94 @@
     }
   </style>
 
+  <!-- Review Modal  -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0" style="border-radius: 1rem;">
+      <div class="modal-header bg-success text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+        <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Leave a Review</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="reviewForm">
+        <div class="modal-body">
+          <input type="text" name="reviewerName" class="form-control mb-3" placeholder="Your Name" required>
+          <textarea name="reviewText" class="form-control mb-3" rows="3" placeholder="Your Review" required></textarea>
+          <div class="mb-3 text-center">
+            <label class="mb-2 fw-bold">Your Rating:</label>
+            <div id="starRating"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success w-100">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Star rating logic
+  let selectedRating = 0;
+const starRatingDiv = document.getElementById('starRating');
+for (let i = 1; i <= 5; i++) {
+  const star = document.createElement('i');
+  star.className = 'bi bi-star fs-3 mx-1';
+  star.dataset.value = i;
+  star.style.cursor = 'pointer';
+  star.addEventListener('click', function() {
+    selectedRating = i;
+    updateStars();
+  });
+  starRatingDiv.appendChild(star);
+}
+function updateStars() {
+  Array.from(starRatingDiv.children).forEach((star, idx) => {
+    star.className = idx < selectedRating ? 'bi bi-star-fill text-warning fs-3 mx-1' : 'bi bi-star fs-3 mx-1';
+  });
+}
+
+document.getElementById('reviewForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (selectedRating === 0) {
+    alert('Please select a star rating!');
+    return;
+  }
+  const customerName = this.reviewerName.value;
+  const comment = this.reviewText.value;
+  fetch(`${API_URL}/api/review`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      customerName,
+      comment,
+      rating: selectedRating
+    })
+  })
+  .then(res => {
+    if (res.ok) {
+      alert('Thank you for your review!');
+      this.reset();
+      selectedRating = 0;
+      updateStars();
+      bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+    } else {
+      alert('Error submitting review. Please try again.');
+    }
+  })
+  .catch(() => alert('Network error. Please try again.'));
+});
+</script>
+  
+
 
   <!-- Reviews Section -->
   <section class="reviews-section py-2 bg-light">
     <div class="container">
+      <div class="container text-center my-3">
+        <button type="button" class="btn btn-outline-success btn-md" data-bs-toggle="modal" data-bs-target="#reviewModal">
+          <i class="bi bi-pencil-square"></i> Leave a Review
+        </button>
+      </div>
       <h2 class="text-center mb-4" style="font-family: 'Georgia', serif;">Customer Reviews</h2>
       <div class="row">
         <div class="d-flex justify-content-center gap-3 mb-2" data-aos="fade-up" data-aos-duration="1000">
@@ -210,6 +294,12 @@
       </div>
     </div>
   </section>
+
+  <div class="text-center my-3">
+    <a href="reviews.html" class="btn btn-outline-primary btn-lg">
+      <i class="bi bi-chat-dots"></i> See more Reviews of our work
+    </a>
+  </div>  
 
   <!-- Contact Us Button -->
   <div class="position-fixed top-0 end-0 m-3">
@@ -316,12 +406,12 @@
 </div>
 <script>
   const API_URL =   window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
-  ? "http://localhost:8080/api/query/user"
-  : "https://jaikaran-backend.onrender.com/api/query/user";
+  ? "http://localhost:8080"
+  : "https://jaikaran-backend.onrender.com";
   document.getElementById('quotationForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const form = e.target;
-    fetch(API_URL, {
+    fetch(`${API_URL}/api/query/user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -353,17 +443,23 @@
 </script>
 
 <script>
-  setTimeout(function () {
-    var quoteModalEl = document.getElementById('quoteModal');
-    var quoteModalInstance = bootstrap.Modal.getInstance(quoteModalEl);
-    // If modal is not open, show it
-    if (!quoteModalEl.classList.contains('show')) {
-      if (!quoteModalInstance) {
-        quoteModalInstance = new bootstrap.Modal(quoteModalEl);
-      }
-      quoteModalInstance.show();
+setTimeout(function () {
+  var quoteModalEl = document.getElementById('quoteModal');
+  var reviewModalEl = document.getElementById('reviewModal');
+  var quoteModalInstance = bootstrap.Modal.getInstance(quoteModalEl);
+  var reviewModalInstance = bootstrap.Modal.getInstance(reviewModalEl);
+
+  // If neither modal is open, show the quotation modal
+  if (
+    !quoteModalEl.classList.contains('show') &&
+    !reviewModalEl.classList.contains('show')
+  ) {
+    if (!quoteModalInstance) {
+      quoteModalInstance = new bootstrap.Modal(quoteModalEl);
     }
-  }, 30000); // 30 seconds
+    quoteModalInstance.show();
+  }
+}, 40000);  // 30 seconds
 </script>
 
 </html>
