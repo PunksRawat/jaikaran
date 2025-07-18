@@ -354,9 +354,16 @@
 
 <script>
   setTimeout(function () {
-    var quoteModal = new bootstrap.Modal(document.getElementById('quoteModal'));
-    quoteModal.show();
-  }, 30000); // 45 seconds
+    var quoteModalEl = document.getElementById('quoteModal');
+    var quoteModalInstance = bootstrap.Modal.getInstance(quoteModalEl);
+    // If modal is not open, show it
+    if (!quoteModalEl.classList.contains('show')) {
+      if (!quoteModalInstance) {
+        quoteModalInstance = new bootstrap.Modal(quoteModalEl);
+      }
+      quoteModalInstance.show();
+    }
+  }, 30000); // 30 seconds
 </script>
 
 </html>
