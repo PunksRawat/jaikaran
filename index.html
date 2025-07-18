@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  
 
 <head>
   <meta charset="UTF-8" />
@@ -282,22 +283,22 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
-        <p class="mb-3">Thank you for visiting JK Industries! Would you like a free quotation for your steel needs?</p>
-
-        <!-- Paid formspree -->
-        <!-- <form action="https://formspree.io/f/xpwlwrnl" method="POST">
-          <input type="text" name="name" class="form-control mb-2" placeholder="Your Name" required>
-          <input type="tel" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
-          <input type="email" name="email" class="form-control mb-2" placeholder="Email (optional)">
-          <button type="submit" class="btn btn-primary w-100 mb-2">Request Quotation</button>
-        </form> -->
-
-        <form action="https://formsubmit.co/c9e61764c7f2078186c1e4b13a41eba5" method="POST">
-          <input type="text" name="name" class="form-control mb-2" placeholder="Your Name" required>
-          <input type="tel" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
-          <input type="email" name="email" class="form-control mb-2" placeholder="Email (optional)">
-          <button type="submit" class="btn btn-primary w-100 mb-2">Request Quotation</button>
-        </form>
+        <!-- Show this message only above the form -->
+        <div id="quoteFormMessage" class="mb-3">
+          Thank you for visiting JK Industries! Would you like a free quotation for your steel needs?
+        </div>
+        <div id="quoteContainer">
+          <form id="quotationForm">
+            <input type="text" name="name" class="form-control mb-2" placeholder="Your Name" required>
+            <input type="tel" name="phoneNumber" class="form-control mb-2" placeholder="Phone Number" required>
+            <input type="email" name="email" class="form-control mb-2" placeholder="Email (optional)">
+            <input type="address" name="address" class="form-control mb-2" placeholder="Address (optional)">
+            <button type="submit" class="btn btn-primary w-100 mb-2">Request Quotation</button>
+          </form>
+          <div id="quoteSuccess" class="alert alert-success mt-3" style="display:none;">
+            We have received your data and will connect with you shortly.
+          </div>
+        </div>
         <div class="mt-2">
           <span>Or</span>
         </div>
@@ -306,12 +307,49 @@
     </div>
   </div>
 </div>
+<script>
+  const API_URL =   window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
+  ? "http://localhost:8080/api/query/user"
+  : "https://jaikaran-backend.onrender.com/api/query/user";
+  document.getElementById('quotationForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = e.target;
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name.value,
+        email: form.email.value,
+        phoneNumber: form.phoneNumber.value,
+        address:form.address.value,
+        queryType: 'quotation'
+      })
+    })
+      .then(res => {
+        if (res.status === 200) {
+          form.style.display = 'none';
+          document.getElementById('quoteFormMessage').style.display = 'none';
+          document.getElementById('quoteSuccess').style.display = 'block';
+          setTimeout(function () {
+            bootstrap.Modal.getInstance(document.getElementById('quoteModal')).hide();
+            document.getElementById('quoteSuccess').style.display = 'none';
+            form.style.display = 'block';
+            document.getElementById('quoteFormMessage').style.display = 'block';
+            form.reset();
+          }, 9000);
+        } else {
+          alert('There was an error. Please try again.');
+        }
+      })
+      .catch(() => alert('Network error. Please try again.'));
+  });
+</script>
 
 <script>
   setTimeout(function () {
     var quoteModal = new bootstrap.Modal(document.getElementById('quoteModal'));
     quoteModal.show();
-  }, 45000); // 45 seconds
+  }, 5000); // 45 seconds
 </script>
 
 </html>
