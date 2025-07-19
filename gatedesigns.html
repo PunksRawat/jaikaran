@@ -63,6 +63,18 @@
       Gate & Grill Designs
     </h2>
     <div id="designsGrid" class="row g-4"></div>
+    <div class="modal fade" id="zoomModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0" style="border-radius:1rem;">
+          <div class="modal-header" style="border-top-left-radius:1rem;border-top-right-radius:1rem;">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-0 text-center">
+            <img id="zoomImg" src="" alt="Zoomed Design" style="max-width:100%;max-height:70vh;border-radius:1rem;">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <script>
     const API_URL = window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
@@ -82,16 +94,27 @@
       .then(res => res.json())
       .then(data => {
         designsGrid.innerHTML = '';
+        // After rendering images
         data.forEach(design => {
           designsGrid.innerHTML += `
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
               <div class="design-card mb-2">
                 ${typeBadge(design.type)}
-                <img src="${design.url}" alt="${design.type} design" class="design-img" loading="lazy">
+                <img src="${design.url}" alt="${design.type} design" class="design-img" loading="lazy" style="cursor:zoom-in;" data-img="${design.url}">
               </div>
             </div>
           `;
         });
+
+        // Add click event for zoom
+        designsGrid.onclick = function(e) {
+          const img = e.target.closest('.design-img');
+          if (img) {
+            document.getElementById('zoomImg').src = img.getAttribute('data-img');
+            const modal = new bootstrap.Modal(document.getElementById('zoomModal'));
+            modal.show();
+          }
+        };
       })
       .catch(() => {
         designsGrid.innerHTML = '<div class="text-danger fw-bold text-center">Failed to load designs. Please try again later.</div>';
