@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JK Industries Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
 <body class="bg-light">
-  <div class="container-fluid px-2 px-md-4 py-3">
-    <h2 class="text-center mb-3">Admin Dashboard</h2>
-    <div id="loginSection" class="card mx-auto mb-3" style="max-width: 400px;">
+  <div class="container-fluid py-4">
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+    <!-- Login Section -->
+    <div id="loginSection" class="card mx-auto mb-4" style="max-width: 400px;">
       <div class="card-body">
         <h5 class="card-title text-center">Login</h5>
         <form id="loginForm">
@@ -20,55 +22,152 @@
         <div id="loginError" class="text-danger mt-2" style="display:none;">Invalid credentials!</div>
       </div>
     </div>
-    <div id="dashboardSection" style="display:none;">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">New Users</h5>
-        </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-striped mb-0">
-              <thead class="table-dark">
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Query Type</th>
-                  <th>Created At</th>
-                </tr>
-              </thead>
-              <tbody id="userTableBody"></tbody>
-            </table>
+
+    <!-- Dashboard Layout -->
+    <div id="dashboardLayout" style="display:none;">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-12 col-md-3 mb-3 mb-md-0">
+          <div class="list-group">
+            <button class="list-group-item list-group-item-action" id="navUserData">
+              <i class="bi bi-people"></i> User Data
+            </button>
+            <button class="list-group-item list-group-item-action" id="navWorkProgress">
+              <i class="bi bi-clipboard-check"></i> Work Progress
+            </button>
+            <button class="list-group-item list-group-item-action" id="navUploadImages">
+              <i class="bi bi-image"></i> Upload Images
+            </button>
+            <button class="list-group-item list-group-item-action text-danger" id="logoutBtn">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
           </div>
-          <nav>
-            <ul class="pagination justify-content-center my-2" id="pagination"></ul>
-          </nav>
+        </div>
+        <!-- Main Content -->
+        <div class="col-12 col-md-9">
+          <!-- User Data Section -->
+          <div id="userSection">
+            <!-- ...user table code as before... -->
+            <div class="card shadow mb-4">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">New Users</h5>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Query Type</th>
+                        <th>Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Work Progress Section -->
+          <div id="workSection" style="display:none;">
+            <div class="d-flex justify-content-end mb-3">
+              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addWorkModal">
+                <i class="bi bi-plus-circle"></i> Add New Work
+              </button>
+            </div>
+            <div class="card shadow">
+              <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Work Progress</h5>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped mb-0">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>PhoneNumber</th>
+                        <th>Type of Work</th>
+                        <th>Start Date</th>
+                        <th>Completion Date</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="workTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Upload Images Section -->
+          <div id="uploadSection" style="display:none;">
+            <div class="card shadow">
+              <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-image"></i> Upload Images</h5>
+              </div>
+              <div class="card-body">
+                <form id="imageUploadForm" enctype="multipart/form-data">
+                  <input type="file" name="image" class="form-control mb-2" accept="image/*" required>
+                  <input type="text" name="name" class="form-control mb-2" placeholder="Image Name" required>
+                  <select name="type" class="form-control mb-2" required>
+                    <option value="">Select Type</option>
+                    <option value="gate">Gate</option>
+                    <option value="grill">Grill</option>
+                    <option value="cement sheet">Cement Sheet</option>
+                    <option value="others">Others</option>
+                  </select>
+                  <button type="submit" class="btn btn-info w-100">Upload</button>
+                </form>
+                <div id="imageUploadMsg" class="mt-2"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="text-end mt-2">
-        <button id="logoutBtn" class="btn btn-outline-secondary btn-sm">Logout</button>
+    </div>
+
+    <!-- Add Work Modal -->
+    <div class="modal fade" id="addWorkModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1rem;">
+          <div class="modal-header bg-success text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+            <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Add New Work</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="addWorkForm">
+            <div class="modal-body">
+              <input type="text" name="name" class="form-control mb-2" placeholder="Name" required>
+              <input type="text" name="address" class="form-control mb-2" placeholder="Address" required>
+              <input type="text" name="phoneNumber" class="form-control mb-2" placeholder="Phone Number" required>
+              <input type="text" name="typeOfWork" class="form-control mb-2" placeholder="Type of Work" required>
+              <input type="date" name="startDate" class="form-control mb-2" placeholder="Start Date" required>
+              <input type="date" name="completionDate" class="form-control mb-2" placeholder="Completion Date" required>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success w-100">Add Work</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Simple login (replace with real authentication in production)
     const USERNAME = "jaikaran";
     const PASSWORD = "sumit";
     const API_URL = window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
-      ? "http://localhost:8080/api/query/user"
-      : "https://jaikaran-backend.onrender.com/api/query/user";
+      ? "http://localhost:8080"
+      : "https://jaikaran-backend.onrender.com";
 
-    let usersData = [];
-    let currentPage = 1;
-    const recordsPerPage = 10;
-
-    // Check login status on page load
+    // Login logic
     if (localStorage.getItem('isLoggedIn') === 'true') {
-      document.getElementById('loginSection').style.display = 'none';
-      document.getElementById('dashboardSection').style.display = 'block';
-      fetchUsers();
+      showDashboard();
+    } else {
+      document.getElementById('loginSection').style.display = 'block';
+      document.getElementById('dashboardLayout').style.display = 'none';
     }
 
     document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -77,9 +176,7 @@
       const password = document.getElementById('password').value;
       if (username === USERNAME && password === PASSWORD) {
         localStorage.setItem('isLoggedIn', 'true');
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('dashboardSection').style.display = 'block';
-        fetchUsers();
+        showDashboard();
       } else {
         document.getElementById('loginError').style.display = 'block';
       }
@@ -87,95 +184,151 @@
 
     document.getElementById('logoutBtn').addEventListener('click', function() {
       localStorage.removeItem('isLoggedIn');
-      document.getElementById('dashboardSection').style.display = 'none';
+      document.getElementById('dashboardLayout').style.display = 'none';
       document.getElementById('loginSection').style.display = 'block';
     });
 
+    function showDashboard() {
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('dashboardLayout').style.display = 'block';
+      showSection('userSection');
+      fetchUsers();
+    }
+
+    // Sidebar navigation logic
+    document.getElementById('navUserData').onclick = function() {
+      showSection('userSection');
+      fetchUsers();
+    };
+    document.getElementById('navWorkProgress').onclick = function() {
+      showSection('workSection');
+      fetchWorkProgress();
+    };
+    document.getElementById('navUploadImages').onclick = function() {
+      showSection('uploadSection');
+      // Future: fetch images if needed
+    };
+
+    function showSection(sectionId) {
+      document.getElementById('userSection').style.display = 'none';
+      document.getElementById('workSection').style.display = 'none';
+      document.getElementById('uploadSection').style.display = 'none';
+      document.getElementById(sectionId).style.display = 'block';
+    }
+
+    // User Table Logic
+    let usersData = [];
+    let currentPage = 1;
+    const recordsPerPage = 10;
+
     function fetchUsers() {
-      fetch(API_URL)
+      fetch(`${API_URL}/api/query/user`)
         .then(res => res.json())
         .then(data => {
           usersData = data;
           currentPage = 1;
-          renderTable();
-          renderPagination();
+          renderUserTable();
         });
     }
 
-    function renderTable() {
-  const tbody = document.getElementById('userTableBody');
-  tbody.innerHTML = '';
-  const start = (currentPage - 1) * recordsPerPage;
-  const end = start + recordsPerPage;
-  const pageData = usersData.slice(start, end);
-  pageData.forEach((user, idx) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${start + idx + 1}</td>
-      <td>${user.name}</td>
-      <td>${user.email}</td>
-      <td>${user.phoneNumber}</td>
-      <td>${user.queryType}</td>
-      <td>${new Date(user.createdAt).toLocaleString()}</td>
-    `;
-    tr.style.cursor = "pointer";
-    tr.addEventListener('click', function() {
-      showUserDetails(user);
-    });
-    tbody.appendChild(tr);
-  });
-}
-
-function showUserDetails(user) {
-  const body = document.getElementById('userDetailsBody');
-  body.innerHTML = `
-    <div class="mb-2"><strong>Name:</strong> ${user.name}</div>
-    <div class="mb-2"><strong>Email:</strong> ${user.email}</div>
-    <div class="mb-2"><strong>Phone Number:</strong> ${user.phoneNumber}</div>
-    <div class="mb-2"><strong>Query Type:</strong> ${user.queryType}</div>
-    <div class="mb-2"><strong>Created At:</strong> ${new Date(user.createdAt).toLocaleString()}</div>
-    <div class="mb-2"><strong>Updated At:</strong> ${new Date(user.updatedAt).toLocaleString()}</div>
-    <div class="mb-2"><strong>ID:</strong> ${user.id}</div>
-  `;
-  const modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
-  modal.show();
-}
-
-    function renderPagination() {
-      const pagination = document.getElementById('pagination');
-      pagination.innerHTML = '';
-      const totalPages = Math.ceil(usersData.length / recordsPerPage);
-      if (totalPages <= 1) return;
-
-      for (let i = 1; i <= totalPages; i++) {
-        pagination.innerHTML += `
-          <li class="page-item ${i === currentPage ? 'active' : ''}">
-            <a class="page-link" href="#">${i}</a>
-          </li>
+    function renderUserTable() {
+      const tbody = document.getElementById('userTableBody');
+      tbody.innerHTML = '';
+      const start = (currentPage - 1) * recordsPerPage;
+      const end = start + recordsPerPage;
+      const pageData = usersData.slice(start, end);
+      pageData.forEach((user, idx) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${start + idx + 1}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.phoneNumber}</td>
+            <td>${user.queryType}</td>
+            <td>${new Date(user.createdAt).toLocaleString()}</td>
+          </tr>
         `;
-      }
-
-      Array.from(pagination.querySelectorAll('.page-link')).forEach((el, idx) => {
-        el.addEventListener('click', function(e) {
-          e.preventDefault();
-          currentPage = idx + 1;
-          renderTable();
-          renderPagination();
-        });
       });
     }
-  </script>
 
-<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0" style="border-radius: 1rem;">
-      <div class="modal-header bg-primary text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
-        <h5 class="modal-title">User Details</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="userDetailsBody"></div>
-    </div>
-  </div>
-</div>
+    // Work Progress Logic
+    function statusBadge(status) {
+      let color = "secondary";
+      if (status === "Completed") color = "success";
+      else if (status === "In Progress") color = "warning";
+      else if (status === "At Risk") color = "danger";
+      else if (status === "Not Started") color = "secondary";
+      return `<span class="badge bg-${color}">${status}</span>`;
+    }
+
+    function fetchWorkProgress() {
+      fetch(`${API_URL}/api/work`)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('workTableBody');
+          tbody.innerHTML = '';
+          data.forEach(w => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${w.name}</td>
+                <td>${w.addresss}</td>
+                <td>${w.phoneNumber}</td>
+                <td>${w.typeOfWork}</td>
+                <td>${w.startDate}</td>
+                <td>${w.completionDate}</td>
+                <td>${statusBadge(w.status)}</td>
+              </tr>
+            `;
+          });
+        });
+    }
+
+    // Add Work Form Logic
+    document.getElementById('addWorkForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      fetch(`${API_URL}/api/work`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name.value,
+          address: form.address.value,
+          phoneNumber: form.phoneNumber.value,
+          typeOfWork: form.typeOfWork.value,
+          startDate: form.startDate.value,
+          completionDate: form.completionDate.value
+        })
+      })
+      .then(res => {
+        if (res.ok) {
+          bootstrap.Modal.getInstance(document.getElementById('addWorkModal')).hide();
+          form.reset();
+          fetchWorkProgress();
+        } else {
+          alert('Error adding work. Please try again.');
+        }
+      })
+      .catch(() => alert('Network error. Please try again.'));
+    });
+
+    // Image Upload Form Logic
+    document.getElementById('imageUploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      fetch(`${API_URL}/api/work/images/upload`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-info">${msg}</div>`;
+        form.reset();
+      })
+      .catch(() => {
+        document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-danger">Upload failed. Please try again.</div>`;
+      });
+    });
+  </script>
 </body>
 </html>
