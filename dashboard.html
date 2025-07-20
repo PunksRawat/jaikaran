@@ -289,9 +289,7 @@
       return val == null ? "" : val;
     }
 
-    // Credentials for login
-    const USERNAME = "jaikaran";
-    const PASSWORD = "sumit";
+
     // Backend API base URL
     const API_URL = window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
       ? "http://localhost:8080"
@@ -299,24 +297,46 @@
 
     // Login logic
     if (localStorage.getItem('isLoggedIn') === 'true') {
+  showDashboard();
+} else {
+  document.getElementById('loginSection').style.display = 'block';
+  document.getElementById('dashboardLayout').style.display = 'none';
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  fetch(`${API_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => {
+    // If response is not OK, treat as failed login
+    if (!res.ok) throw new Error('Login error');
+    return res.json();
+  })
+  .then(isValid => {
+    if (isValid === true) {
+      localStorage.setItem('isLoggedIn', 'true');
       showDashboard();
     } else {
-      document.getElementById('loginSection').style.display = 'block';
+      localStorage.removeItem('isLoggedIn');
+      document.getElementById('loginError').textContent = 'Invalid credentials!';
+      document.getElementById('loginError').style.display = 'block';
       document.getElementById('dashboardLayout').style.display = 'none';
+      document.getElementById('loginSection').style.display = 'block';
     }
-
-    // Login form submit handler
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      if (username === USERNAME && password === PASSWORD) {
-        localStorage.setItem('isLoggedIn', 'true');
-        showDashboard();
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-      }
-    });
+  })
+  .catch(() => {
+    localStorage.removeItem('isLoggedIn');
+    document.getElementById('loginError').textContent = 'login error!';
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('dashboardLayout').style.display = 'none';
+    document.getElementById('loginSection').style.display = 'block';
+  });
+});
 
     // Logout handler
     document.getElementById('logoutBtn').addEventListener('click', function() {
