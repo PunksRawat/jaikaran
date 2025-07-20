@@ -17,4 +17,15 @@ body {
   .hero-section .z-1 {
     z-index: 1;
   }
+
+  @keyframes zoomInOut {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  
+  .animated-service-btn {
+    animation: zoomInOut 1s infinite ease-in-out;
+  }
+
+  
   

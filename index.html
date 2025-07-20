@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+
 
 <head>
   <meta charset="UTF-8" />
@@ -68,9 +68,10 @@
         </span>
       </div>  -->
       <div class="d-flex justify-content-center align-items-center gap-3 mt-3 flex-row">
-        <a href="work.html" class="btn btn-primary" data-aos="flip-up" data-aos-duration="1000">Check Our Work</a>
-        <a href="services.html" class="btn btn-primary" data-aos="flip-up" data-aos-duration="1000">Check Our
-          Services</a>
+        <a href="services.html" class="btn btn-primary btn-lg animated-service-btn" data-aos="flip-up"
+        data-aos-duration="1000" style="font-size:1.3rem; padding:0.75rem 2rem;">
+        <i class="bi bi-tools me-2"></i> Check Our Services <i class="bi bi-arrow-right-circle ms-2"></i>
+      </a>
       </div>
     </div>
 
@@ -133,90 +134,93 @@
   </style>
 
   <!-- Review Modal  -->
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0" style="border-radius: 1rem;">
-      <div class="modal-header bg-success text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
-        <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Leave a Review</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form id="reviewForm">
-        <div class="modal-body">
-          <input type="text" name="reviewerName" class="form-control mb-3" placeholder="Your Name" required>
-          <textarea name="reviewText" class="form-control mb-3" rows="3" placeholder="Your Review" required></textarea>
-          <div class="mb-3 text-center">
-            <label class="mb-2 fw-bold">Your Rating:</label>
-            <div id="starRating"></div>
+  <div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0" style="border-radius: 1rem;">
+        <div class="modal-header bg-success text-white"
+          style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Leave a Review</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="reviewForm">
+          <div class="modal-body">
+            <input type="text" name="reviewerName" class="form-control mb-3" placeholder="Your Name" required>
+            <textarea name="reviewText" class="form-control mb-3" rows="3" placeholder="Your Review"
+              required></textarea>
+            <div class="mb-3 text-center">
+              <label class="mb-2 fw-bold">Your Rating:</label>
+              <div id="starRating"></div>
+            </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success w-100">Submit Review</button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success w-100">Submit Review</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  // Star rating logic
-  let selectedRating = 0;
-const starRatingDiv = document.getElementById('starRating');
-for (let i = 1; i <= 5; i++) {
-  const star = document.createElement('i');
-  star.className = 'bi bi-star fs-3 mx-1';
-  star.dataset.value = i;
-  star.style.cursor = 'pointer';
-  star.addEventListener('click', function() {
-    selectedRating = i;
-    updateStars();
-  });
-  starRatingDiv.appendChild(star);
-}
-function updateStars() {
-  Array.from(starRatingDiv.children).forEach((star, idx) => {
-    star.className = idx < selectedRating ? 'bi bi-star-fill text-warning fs-3 mx-1' : 'bi bi-star fs-3 mx-1';
-  });
-}
-
-document.getElementById('reviewForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (selectedRating === 0) {
-    alert('Please select a star rating!');
-    return;
-  }
-  const customerName = this.reviewerName.value;
-  const comment = this.reviewText.value;
-  fetch(`${API_URL}/api/review`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      customerName,
-      comment,
-      rating: selectedRating
-    })
-  })
-  .then(res => {
-    if (res.ok) {
-      alert('Thank you for your review!');
-      this.reset();
-      selectedRating = 0;
-      updateStars();
-      bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
-    } else {
-      alert('Error submitting review. Please try again.');
+  <script>
+    // Star rating logic
+    let selectedRating = 0;
+    const starRatingDiv = document.getElementById('starRating');
+    for (let i = 1; i <= 5; i++) {
+      const star = document.createElement('i');
+      star.className = 'bi bi-star fs-3 mx-1';
+      star.dataset.value = i;
+      star.style.cursor = 'pointer';
+      star.addEventListener('click', function () {
+        selectedRating = i;
+        updateStars();
+      });
+      starRatingDiv.appendChild(star);
     }
-  })
-  .catch(() => alert('Network error. Please try again.'));
-});
-</script>
-  
+    function updateStars() {
+      Array.from(starRatingDiv.children).forEach((star, idx) => {
+        star.className = idx < selectedRating ? 'bi bi-star-fill text-warning fs-3 mx-1' : 'bi bi-star fs-3 mx-1';
+      });
+    }
+
+    document.getElementById('reviewForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (selectedRating === 0) {
+        alert('Please select a star rating!');
+        return;
+      }
+      const customerName = this.reviewerName.value;
+      const comment = this.reviewText.value;
+      fetch(`${API_URL}/api/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName,
+          comment,
+          rating: selectedRating
+        })
+      })
+        .then(res => {
+          if (res.ok) {
+            alert('Thank you for your review!');
+            this.reset();
+            selectedRating = 0;
+            updateStars();
+            bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+          } else {
+            alert('Error submitting review. Please try again.');
+          }
+        })
+        .catch(() => alert('Network error. Please try again.'));
+    });
+  </script>
+
 
 
   <!-- Reviews Section -->
   <section class="reviews-section py-2 bg-light">
     <div class="container">
       <div class="container text-center my-3">
-        <button type="button" class="btn btn-outline-success btn-md" data-bs-toggle="modal" data-bs-target="#reviewModal">
+        <button type="button" class="btn btn-outline-success btn-md" data-bs-toggle="modal"
+          data-bs-target="#reviewModal">
           <i class="bi bi-pencil-square"></i> Leave a Review
         </button>
       </div>
@@ -296,7 +300,7 @@ document.getElementById('reviewForm').addEventListener('submit', function(e) {
     <a href="reviews.html" class="btn btn-outline-primary btn-lg">
       <i class="bi bi-chat-dots"></i> See more Reviews of our work
     </a>
-  </div>  
+  </div>
 
   <!-- Contact Us Button -->
   <div class="position-fixed top-0 end-0 m-3">
@@ -329,11 +333,11 @@ document.getElementById('reviewForm').addEventListener('submit', function(e) {
   </div>
 
   <!-- Request a Callback Button -->
-<div class="text-center my-4">
-  <button type="button" class="btn btn-warning btn-small" data-bs-toggle="modal" data-bs-target="#quoteModal">
-    <i class="bi bi-telephone"></i> Request a Callback from Our Team
-  </button>
-</div>
+  <div class="text-center my-4">
+    <button type="button" class="btn btn-warning btn-small" data-bs-toggle="modal" data-bs-target="#quoteModal">
+      <i class="bi bi-telephone"></i> Request a Callback from Our Team
+    </button>
+  </div>
 
   <!-- Contact Us Section -->
   <section class="contact-us-section py-5 bg-dark text-white">
@@ -402,9 +406,9 @@ document.getElementById('reviewForm').addEventListener('submit', function(e) {
   </div>
 </div>
 <script>
-  const API_URL =   window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
-  ? "http://localhost:8080"
-  : "https://jaikaran-backend.onrender.com";
+  const API_URL = window.location.hostname.includes("127") || window.location.hostname.includes("localhost")
+    ? "http://localhost:8080"
+    : "https://jaikaran-backend.onrender.com";
   document.getElementById('quotationForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const form = e.target;
@@ -415,7 +419,7 @@ document.getElementById('reviewForm').addEventListener('submit', function(e) {
         name: form.name.value,
         email: form.email.value,
         phoneNumber: form.phoneNumber.value,
-        address:form.address.value,
+        address: form.address.value,
         queryType: 'quotation'
       })
     })
@@ -440,23 +444,23 @@ document.getElementById('reviewForm').addEventListener('submit', function(e) {
 </script>
 
 <script>
-setTimeout(function () {
-  var quoteModalEl = document.getElementById('quoteModal');
-  var reviewModalEl = document.getElementById('reviewModal');
-  var quoteModalInstance = bootstrap.Modal.getInstance(quoteModalEl);
-  var reviewModalInstance = bootstrap.Modal.getInstance(reviewModalEl);
+  setTimeout(function () {
+    var quoteModalEl = document.getElementById('quoteModal');
+    var reviewModalEl = document.getElementById('reviewModal');
+    var quoteModalInstance = bootstrap.Modal.getInstance(quoteModalEl);
+    var reviewModalInstance = bootstrap.Modal.getInstance(reviewModalEl);
 
-  // If neither modal is open, show the quotation modal
-  if (
-    !quoteModalEl.classList.contains('show') &&
-    !reviewModalEl.classList.contains('show')
-  ) {
-    if (!quoteModalInstance) {
-      quoteModalInstance = new bootstrap.Modal(quoteModalEl);
+    // If neither modal is open, show the quotation modal
+    if (
+      !quoteModalEl.classList.contains('show') &&
+      !reviewModalEl.classList.contains('show')
+    ) {
+      if (!quoteModalInstance) {
+        quoteModalInstance = new bootstrap.Modal(quoteModalEl);
+      }
+      quoteModalInstance.show();
     }
-    quoteModalInstance.show();
-  }
-}, 40000);  // 30 seconds
+  }, 40000);  // 30 seconds
 </script>
 
 </html>
