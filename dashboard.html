@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!--
     JK Industries Admin Dashboard
@@ -24,6 +25,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
+
 <body class="bg-light">
   <!-- Login Section -->
   <div class="container-fluid py-4">
@@ -191,7 +193,8 @@
     <div class="modal fade" id="addWorkModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0" style="border-radius: 1rem;">
-          <div class="modal-header bg-success text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <div class="modal-header bg-success text-white"
+            style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
             <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Add New Work</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
@@ -216,7 +219,8 @@
     <div class="modal fade" id="editWorkModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0" style="border-radius: 1rem;">
-          <div class="modal-header bg-warning text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <div class="modal-header bg-warning text-white"
+            style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
             <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Work</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
@@ -230,7 +234,8 @@
               <label for="editCompletionDate" class="form-label">Completion Date</label>
               <input type="date" id="editCompletionDate" class="form-control">
             </div>
-            <button id="updateDatesBtn" class="btn btn-info w-100 mb-2"><i class="bi bi-calendar-check"></i> Update Dates</button>
+            <button id="updateDatesBtn" class="btn btn-info w-100 mb-2"><i class="bi bi-calendar-check"></i> Update
+              Dates</button>
             <button id="markCompleteBtn" class="btn btn-success w-100">Mark as Complete</button>
           </div>
         </div>
@@ -241,7 +246,8 @@
     <div class="modal fade" id="addSaleModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0" style="border-radius: 1rem;">
-          <div class="modal-header bg-success text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <div class="modal-header bg-success text-white"
+            style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
             <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Add Sale Data</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
@@ -250,13 +256,15 @@
               <input type="date" name="date" id="saleDate" class="form-control mb-2" required>
               <input type="text" name="itemName" class="form-control mb-2" placeholder="Item Name" required>
               <input type="number" name="price" class="form-control mb-2" placeholder="Price" required>
-              <input type="number" name="quantity" class="form-control mb-2" placeholder="Quantity" >
+              <input type="number" name="quantity" class="form-control mb-2" placeholder="Quantity" step="any">
               <input type="text" name="buyerName" class="form-control mb-2" placeholder="Buyer Name" required>
               <select name="txnType" class="form-control mb-2">
-                <option value="">Transaction Type</option>
+                <option value="OTHER">Transaction Type</option>
                 <option value="CASH">Cash</option>
                 <option value="CARD">Card</option>
                 <option value="UPI">UPI</option>
+                <option value="CREDIT">CREDIT</option>
+                <option value="ADVANCE">ADVANCE</option>
                 <option value="OTHER">Other</option>
               </select>
               <textarea name="comments" class="form-control mb-2" placeholder="Comments"></textarea>
@@ -273,7 +281,8 @@
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0" style="border-radius: 1rem;">
-          <div class="modal-header bg-primary text-white" style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <div class="modal-header bg-primary text-white"
+            style="border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
             <h5 class="modal-title"><i class="bi bi-info-circle"></i> Details</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
@@ -297,49 +306,49 @@
 
     // Login logic
     if (localStorage.getItem('isLoggedIn') === 'true') {
-  showDashboard();
-} else {
-  document.getElementById('loginSection').style.display = 'block';
-  document.getElementById('dashboardLayout').style.display = 'none';
-}
-
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  fetch(`${API_URL}/api/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  })
-  .then(res => {
-    // If response is not OK, treat as failed login
-    if (!res.ok) throw new Error('Login error');
-    return res.json();
-  })
-  .then(isValid => {
-    if (isValid === true) {
-      localStorage.setItem('isLoggedIn', 'true');
       showDashboard();
     } else {
-      localStorage.removeItem('isLoggedIn');
-      document.getElementById('loginError').textContent = 'Invalid credentials!';
-      document.getElementById('loginError').style.display = 'block';
-      document.getElementById('dashboardLayout').style.display = 'none';
       document.getElementById('loginSection').style.display = 'block';
+      document.getElementById('dashboardLayout').style.display = 'none';
     }
-  })
-  .catch(() => {
-    localStorage.removeItem('isLoggedIn');
-    document.getElementById('loginError').textContent = 'login error!';
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('dashboardLayout').style.display = 'none';
-    document.getElementById('loginSection').style.display = 'block';
-  });
-});
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+        .then(res => {
+          // If response is not OK, treat as failed login
+          if (!res.ok) throw new Error('Login error');
+          return res.json();
+        })
+        .then(isValid => {
+          if (isValid === true) {
+            localStorage.setItem('isLoggedIn', 'true');
+            showDashboard();
+          } else {
+            localStorage.removeItem('isLoggedIn');
+            document.getElementById('loginError').textContent = 'Invalid credentials!';
+            document.getElementById('loginError').style.display = 'block';
+            document.getElementById('dashboardLayout').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem('isLoggedIn');
+          document.getElementById('loginError').textContent = 'login error!';
+          document.getElementById('loginError').style.display = 'block';
+          document.getElementById('dashboardLayout').style.display = 'none';
+          document.getElementById('loginSection').style.display = 'block';
+        });
+    });
 
     // Logout handler
-    document.getElementById('logoutBtn').addEventListener('click', function() {
+    document.getElementById('logoutBtn').addEventListener('click', function () {
       localStorage.removeItem('isLoggedIn');
       document.getElementById('dashboardLayout').style.display = 'none';
       document.getElementById('loginSection').style.display = 'block';
@@ -350,23 +359,27 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
       document.getElementById('loginSection').style.display = 'none';
       document.getElementById('dashboardLayout').style.display = 'block';
       showSection('saleSection');
+      // Set date inputs to today
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('weekStart').value = today;
+      document.getElementById('weekEnd').value = today;
       fetchSaleData();
     }
 
     // Sidebar navigation logic
-    document.getElementById('navUserData').onclick = function() {
+    document.getElementById('navUserData').onclick = function () {
       showSection('userSection');
       fetchUsers();
     };
-    document.getElementById('navWorkProgress').onclick = function() {
+    document.getElementById('navWorkProgress').onclick = function () {
       showSection('workSection');
       fetchWorkProgress();
     };
-    document.getElementById('navSaleData').onclick = function() {
+    document.getElementById('navSaleData').onclick = function () {
       showSection('saleSection');
       fetchSaleData();
     };
-    document.getElementById('navUploadImages').onclick = function() {
+    document.getElementById('navUploadImages').onclick = function () {
       showSection('uploadSection');
     };
 
@@ -415,7 +428,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     }
 
     // User Data row click for details popup (null-safe)
-    document.getElementById('userTableBody').addEventListener('click', function(e) {
+    document.getElementById('userTableBody').addEventListener('click', function (e) {
       const row = e.target.closest('tr');
       if (!row) return;
       const idx = row.rowIndex - 1;
@@ -472,7 +485,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     }
 
     // Work Progress row click for details popup (null-safe, ignore edit button)
-    document.getElementById('workTableBody').addEventListener('click', function(e) {
+    document.getElementById('workTableBody').addEventListener('click', function (e) {
       const row = e.target.closest('tr');
       if (!row || e.target.closest('.edit-btn')) return;
       const idx = row.rowIndex - 1;
@@ -496,8 +509,11 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     let saleDataArr = [];
 
     function fetchSaleData() {
-      const start = document.getElementById('weekStart').value;
-      const end = document.getElementById('weekEnd').value;
+      const weekStartInput = document.getElementById('weekStart');
+      const weekEndInput = document.getElementById('weekEnd');
+      const today = new Date().toISOString().slice(0, 10);
+      const start = weekStartInput.value || today;
+      const end = weekEndInput.value || today;
       let url = `${API_URL}/api/sale`;
       if (start && end) url += `?startDate=${start}&endDate=${end}`;
       fetch(url)
@@ -524,7 +540,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     document.getElementById('filterSaleBtn').onclick = fetchSaleData;
 
     // Sale Data row click for details popup (null-safe)
-    document.getElementById('saleTableBody').addEventListener('click', function(e) {
+    document.getElementById('saleTableBody').addEventListener('click', function (e) {
       const row = e.target.closest('tr');
       if (!row) return;
       const idx = row.rowIndex - 1;
@@ -550,7 +566,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     });
 
     // Add Sale Form Logic
-    document.getElementById('addSaleForm').addEventListener('submit', function(e) {
+    document.getElementById('addSaleForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const form = e.target;
       fetch(`${API_URL}/api/sale`, {
@@ -566,20 +582,20 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
           date: form.date.value
         })
       })
-      .then(res => {
-        if (res.ok) {
-          bootstrap.Modal.getInstance(document.getElementById('addSaleModal')).hide();
-          form.reset();
-          fetchSaleData();
-        } else {
-          alert('Error adding sale data.');
-        }
-      })
-      .catch(() => alert('Network error.'));
+        .then(res => {
+          if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('addSaleModal')).hide();
+            form.reset();
+            fetchSaleData();
+          } else {
+            alert('Error adding sale data.');
+          }
+        })
+        .catch(() => alert('Network error.'));
     });
 
     // Add Work Form Logic
-    document.getElementById('addWorkForm').addEventListener('submit', function(e) {
+    document.getElementById('addWorkForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const form = e.target;
       fetch(`${API_URL}/api/work`, {
@@ -594,21 +610,21 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
           completionDate: form.completionDate.value
         })
       })
-      .then(res => {
-        if (res.ok) {
-          bootstrap.Modal.getInstance(document.getElementById('addWorkModal')).hide();
-          form.reset();
-          fetchWorkProgress();
-        } else {
-          alert('Error adding work. Please try again.');
-        }
-      })
-      .catch(() => alert('Network error. Please try again.'));
+        .then(res => {
+          if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('addWorkModal')).hide();
+            form.reset();
+            fetchWorkProgress();
+          } else {
+            alert('Error adding work. Please try again.');
+          }
+        })
+        .catch(() => alert('Network error. Please try again.'));
     });
 
     // Edit Work Modal Logic
     let selectedWorkId = null;
-    document.getElementById('workTableBody').addEventListener('click', function(e) {
+    document.getElementById('workTableBody').addEventListener('click', function (e) {
       const btn = e.target.closest('.edit-btn');
       if (btn) {
         selectedWorkId = btn.getAttribute('data-id');
@@ -619,7 +635,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     });
 
     // Update Dates button handler
-    document.getElementById('updateDatesBtn').addEventListener('click', function() {
+    document.getElementById('updateDatesBtn').addEventListener('click', function () {
       if (!selectedWorkId) return;
       const startDate = document.getElementById('editStartDate').value;
       const completionDate = document.getElementById('editCompletionDate').value;
@@ -631,46 +647,46 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
           completionDate: completionDate || null
         })
       })
-      .then(res => {
-        if (res.ok) {
-          document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-success">Dates updated!</div>`;
-          fetchWorkProgress();
-          setTimeout(() => {
-            bootstrap.Modal.getInstance(document.getElementById('editWorkModal')).hide();
-          }, 1000);
-        } else {
-          document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Failed to update dates.</div>`;
-        }
-      })
-      .catch(() => {
-        document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Network error.</div>`;
-      });
+        .then(res => {
+          if (res.ok) {
+            document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-success">Dates updated!</div>`;
+            fetchWorkProgress();
+            setTimeout(() => {
+              bootstrap.Modal.getInstance(document.getElementById('editWorkModal')).hide();
+            }, 1000);
+          } else {
+            document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Failed to update dates.</div>`;
+          }
+        })
+        .catch(() => {
+          document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Network error.</div>`;
+        });
     });
 
     // Mark as Complete button handler
-    document.getElementById('markCompleteBtn').addEventListener('click', function() {
+    document.getElementById('markCompleteBtn').addEventListener('click', function () {
       if (!selectedWorkId) return;
       fetch(`${API_URL}/api/work/${selectedWorkId}/complete`, {
         method: 'PATCH'
       })
-      .then(res => {
-        if (res.ok) {
-          document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-success">Marked as complete!</div>`;
-          fetchWorkProgress();
-          setTimeout(() => {
-            bootstrap.Modal.getInstance(document.getElementById('editWorkModal')).hide();
-          }, 1000);
-        } else {
-          document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Failed to update status.</div>`;
-        }
-      })
-      .catch(() => {
-        document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Network error.</div>`;
-      });
+        .then(res => {
+          if (res.ok) {
+            document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-success">Marked as complete!</div>`;
+            fetchWorkProgress();
+            setTimeout(() => {
+              bootstrap.Modal.getInstance(document.getElementById('editWorkModal')).hide();
+            }, 1000);
+          } else {
+            document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Failed to update status.</div>`;
+          }
+        })
+        .catch(() => {
+          document.getElementById('editWorkMsg').innerHTML = `<div class="alert alert-danger">Network error.</div>`;
+        });
     });
 
     // Image Upload Form Logic
-    document.getElementById('imageUploadForm').addEventListener('submit', function(e) {
+    document.getElementById('imageUploadForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
@@ -678,15 +694,16 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         method: 'POST',
         body: formData
       })
-      .then(res => res.text())
-      .then(msg => {
-        document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-info">${msg}</div>`;
-        form.reset();
-      })
-      .catch(() => {
-        document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-danger">Upload failed. Please try again.</div>`;
-      });
+        .then(res => res.text())
+        .then(msg => {
+          document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-info">${msg}</div>`;
+          form.reset();
+        })
+        .catch(() => {
+          document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-danger">Upload failed. Please try again.</div>`;
+        });
     });
   </script>
 </body>
+
 </html>
