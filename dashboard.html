@@ -60,6 +60,9 @@
             <button class="list-group-item list-group-item-action" id="navUserData">
               <i class="bi bi-people"></i> User Data
             </button>
+            <button class="list-group-item list-group-item-action" id="navIssues">
+              <i class="bi bi-bug"></i> Report Issues / Request Feature
+            </button>
             <button class="list-group-item list-group-item-action text-danger" id="logoutBtn">
               <i class="bi bi-box-arrow-right"></i> Logout
             </button>
@@ -371,6 +374,10 @@
       showSection('userSection');
       fetchUsers();
     };
+    document.getElementById('navIssues').onclick = function() {
+  window.location.href = "issues.html";
+};
+    
     document.getElementById('navWorkProgress').onclick = function () {
       showSection('workSection');
       fetchWorkProgress();
