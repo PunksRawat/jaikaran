@@ -151,12 +151,11 @@
                     <thead class="table-dark">
                       <tr>
                         <th>Date</th>
-                        <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
                         <th>Buyer Name</th>
                         <th>Transaction Type</th>
                         <th>Comments</th>
+                        <th>Total Price</th>
+                        <th>All Items</th>
                       </tr>
                     </thead>
                     <tbody id="saleTableBody"></tbody>
@@ -256,10 +255,9 @@
           </div>
           <form id="addSaleForm">
             <div class="modal-body">
+              <div id="saleItemsList"></div>
+              <button type="button" class="btn btn-secondary btn-sm mb-2" onclick="addSaleItem()">Add Item</button>
               <input type="date" name="date" id="saleDate" class="form-control mb-2" required>
-              <input type="text" name="itemName" class="form-control mb-2" placeholder="Item Name" required>
-              <input type="number" name="price" class="form-control mb-2" placeholder="Price" required step="any">
-              <input type="number" name="quantity" class="form-control mb-2" placeholder="Quantity" step="any">
               <input type="text" name="buyerName" class="form-control mb-2" placeholder="Buyer Name" required>
               <select name="txnType" class="form-control mb-2">
                 <option value="OTHER">Transaction Type</option>
@@ -279,6 +277,19 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="saleItemsModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1rem;">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Sale Items</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="saleItemsModalBody"></div>
+        </div>
+      </div>
+    </div>
+    
 
     <!-- Details Modal (for all sections) -->
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
@@ -532,13 +543,16 @@
           data.forEach((sale, idx) => {
             tbody.innerHTML += `
               <tr>
-                <td>${safe(sale.date)}</td>
-                <td>${safe(sale.itemName)}</td>
-                <td>${safe(sale.quantity)}</td>
-                <td>${safe(sale.price)}</td>
-                <td>${safe(sale.buyerName)}</td>
-                <td>${safe(sale.txnType)}</td>
-                <td>${safe(sale.comments)}</td>
+    <td>${safe(sale.date)}</td>
+    <td>${safe(sale.buyerName)}</td>
+    <td>${safe(sale.txnType)}</td>
+    <td>${safe(sale.comments)}</td>
+    <td>${safe(sale.totalPrice)}</td>
+        <td>
+<button class="btn btn-info btn-sm" onclick="showSaleItems(event, ${idx})">
+  Check All Items
+</button>
+    </td>
               </tr>
             `;
           });
@@ -556,9 +570,7 @@
       document.getElementById('detailsModalBody').innerHTML = `
         <ul class="list-group">
           <li class="list-group-item"><strong>Date:</strong> ${safe(sale.date)}</li>
-          <li class="list-group-item"><strong>Item Name:</strong> ${safe(sale.itemName)}</li>
-          <li class="list-group-item"><strong>Quantity:</strong> ${safe(sale.quantity)}</li>
-          <li class="list-group-item"><strong>Price:</strong> ${safe(sale.price)}</li>
+          <li class="list-group-item"><strong>Total Price:</strong> ${safe(sale.totalPrice)}</li>
           <li class="list-group-item"><strong>Buyer Name:</strong> ${safe(sale.buyerName)}</li>
           <li class="list-group-item"><strong>Transaction Type:</strong> ${safe(sale.txnType)}</li>
           <li class="list-group-item"><strong>Comments:</strong> ${safe(sale.comments)}</li>
@@ -572,34 +584,78 @@
       document.getElementById('saleDate').value = new Date().toISOString().slice(0, 10);
     });
 
+    let saleItems = [];
+
+function addSaleItem() {
+  const idx = saleItems.length;
+  saleItems.push({ itemName: '', quantity: '', price: '' });
+  renderSaleItems();
+}
+
+function renderSaleItems() {
+  const container = document.getElementById('saleItemsList');
+  container.innerHTML = saleItems.map((item, idx) => `
+    <div class="row mb-2" id="sale-item-${idx}">
+      <div class="col">
+        <input type="text" class="form-control" placeholder="Item Name" value="${item.itemName}" 
+          onchange="updateSaleItem(${idx}, 'itemName', this.value)" required>
+      </div>
+      <div class="col">
+        <input type="number" class="form-control" placeholder="Quantity" value="${item.quantity}" step="any"
+          onchange="updateSaleItem(${idx}, 'quantity', this.value)">
+      </div>
+      <div class="col">
+        <input type="number" class="form-control" placeholder="Price" value="${item.price}" step="any"
+          onchange="updateSaleItem(${idx}, 'price', this.value)" required>
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeSaleItem(${idx})">&times;</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.updateSaleItem = function(idx, field, value) {
+  saleItems[idx][field] = value;
+};
+
+window.removeSaleItem = function(idx) {
+  saleItems.splice(idx, 1);
+  renderSaleItems();
+};
+
+// Reset saleItems when modal opens
+document.getElementById('addSaleModal').addEventListener('show.bs.modal', function () {
+  saleItems = [];
+  addSaleItem();
+});
+
     // Add Sale Form Logic
-    document.getElementById('addSaleForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const form = e.target;
-      fetch(`${API_URL}/api/sale`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          itemName: form.itemName.value,
-          price: form.price.value,
-          txnType: form.txnType.value,
-          comments: form.comments.value,
-          quantity: form.quantity.value,
-          buyerName: form.buyerName.value,
-          date: form.date.value
-        })
-      })
-        .then(res => {
-          if (res.ok) {
-            bootstrap.Modal.getInstance(document.getElementById('addSaleModal')).hide();
-            form.reset();
-            fetchSaleData();
-          } else {
-            alert('Error adding sale data.');
-          }
-        })
-        .catch(() => alert('Network error.'));
-    });
+    document.getElementById('addSaleForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = e.target;
+  fetch(`${API_URL}/api/sale`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      items: saleItems,
+      buyerName: form.buyerName.value,
+      txnType: form.txnType.value,
+      comments: form.comments.value,
+      date: document.getElementById('saleDate').value
+    })
+  })
+  .then(res => {
+    if (res.ok) {
+      bootstrap.Modal.getInstance(document.getElementById('addSaleModal')).hide();
+      form.reset();
+      fetchSaleData();
+    } else {
+      alert('Error adding sale data.');
+    }
+  })
+  .catch(() => alert('Network error.'));
+});
 
     // Add Work Form Logic
     document.getElementById('addWorkForm').addEventListener('submit', function (e) {
@@ -710,6 +766,28 @@
           document.getElementById('imageUploadMsg').innerHTML = `<div class="alert alert-danger">Upload failed. Please try again.</div>`;
         });
     });
+
+    window.showSaleItems = function(event, idx) {
+  event.stopPropagation(); // Prevent row click event
+  const sale = saleDataArr[idx];
+  if (!sale || !sale.items || sale.items.length === 0) {
+    document.getElementById('saleItemsModalBody').innerHTML = "<p>No items found.</p>";
+  } else {
+    document.getElementById('saleItemsModalBody').innerHTML = `
+      <ul class="list-group">
+        ${sale.items.map(item => `
+          <li class="list-group-item">
+            <strong>Item Name:</strong> ${safe(item.itemName)}<br>
+            <strong>Quantity:</strong> ${safe(item.quantity)}<br>
+            <strong>Price:</strong> ${safe(item.price)}
+          </li>
+        `).join('')}
+      </ul>
+    `;
+  }
+  new bootstrap.Modal(document.getElementById('saleItemsModal')).show();
+};
+
   </script>
 </body>
 
